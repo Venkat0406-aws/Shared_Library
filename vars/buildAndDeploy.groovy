@@ -1,4 +1,4 @@
-def call(String repoUrl, String branchName, String artifactId, String groupId, String version, String filePath, String nexusUrl, String nexusRepo, String sonarProjectKey, String sonarSources) {
+def call(Map params) {
     pipeline {
         agent any
 
@@ -9,7 +9,7 @@ def call(String repoUrl, String branchName, String artifactId, String groupId, S
         stages {
             stage('Checkout') {
                 steps {
-                    git url: repoUrl, branch: branchName
+                    git url: params.repoUrl, branch: params.branchName
                 }
             }
 
@@ -27,7 +27,7 @@ def call(String repoUrl, String branchName, String artifactId, String groupId, S
 
             stage('Deploy to Nexus') {
                 steps {
-                    nexusArtifactUploader artifacts: [[artifactId: artifactId, classifier: '', file: filePath, type: 'war']], credentialsId: 'Nexus', groupId: groupId, nexusUrl: nexusUrl, nexusVersion: 'nexus3', protocol: 'http', repository: nexusRepo, version: version
+                    nexusArtifactUploader artifacts: [[artifactId: params.artifactId, classifier: '', file: params.filePath, type: 'war']], credentialsId: 'Nexus', groupId: params.groupId, nexusUrl: params.nexusUrl, nexusVersion: 'nexus3', protocol: 'http', repository: params.nexusRepo, version: params.version
                 }
             }
 
@@ -37,7 +37,7 @@ def call(String repoUrl, String branchName, String artifactId, String groupId, S
                         scannerHome = tool 'SonarQube'
                     }
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${sonarProjectKey} -Dsonar.sources=${sonarSources}"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${params.sonarProjectKey} -Dsonar.sources=${params.sonarSources}"
                     }
                 }
             }
