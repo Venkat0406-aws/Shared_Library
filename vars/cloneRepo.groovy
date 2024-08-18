@@ -1,8 +1,8 @@
-def call(String repoUrl, String branch = 'main', String credentialsId = '') {
+def call(Map stageParams) {
+
     checkout([
         $class: 'GitSCM',
-        branches: [[name: "*/${main}"]],
-        userRemoteConfigs: [[url: 'https://github.com/Venkat0406-aws/Maven.git', credentialsId: 'Git']]
+        branches: [[name:  stageParams.branch ]],
+        userRemoteConfigs: [[ url: stageParams.url ]]
     ])
-}
-
+  }
