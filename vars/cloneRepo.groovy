@@ -1,8 +1,8 @@
 def call(String repoUrl, String branch = 'main', String credentialsId = '') {
     checkout([
         $class: 'GitSCM',
-        branches: [[name: "*/${branch}"]],
-        userRemoteConfigs: [[url: repoUrl, credentialsId: credentialsId]]
+        branches: [[name: "*/${main}"]],
+        userRemoteConfigs: [[url: https://github.com/Venkat0406-aws/Maven.git, credentialsId: Git]]
     ])
 }
 
